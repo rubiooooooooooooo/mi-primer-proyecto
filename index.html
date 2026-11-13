@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calculadora inmobiliaria</title>
+  <style>
+    body { font-family: Arial; max-width: 450px; margin: 40px auto; padding: 20px; }
+    h2 { color: #b30638; }
+    input { width: 100%; box-sizing: border-box; padding: 12px; margin: 8px 0 18px; }
+    button { background: #b30638; color: white; padding: 14px; border: 0; cursor: pointer; width: 100%; }
+    #resultado { margin-top: 25px; font-size: 22px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>Calculadora de rentabilidad</h2>
+
+  <label>Precio de compra (€)</label>
+  <input type="number" id="precio" min="0">
+
+  <label>Gastos de compra (€)</label>
+  <input type="number" id="gastos" min="0">
+
+  <label>Alquiler mensual (€)</label>
+  <input type="number" id="alquiler" min="0">
+
+  <button onclick="calcular()">Calcular rentabilidad</button>
+  <div id="resultado"></div>
+
+  <script>
+    function calcular() {
+      const precio = Number(document.getElementById("precio").value);
+      const gastos = Number(document.getElementById("gastos").value);
+      const alquiler = Number(document.getElementById("alquiler").value);
+      const resultado = document.getElementById("resultado");
+
+      if (precio <= 0 || gastos < 0 || alquiler < 0 || precio + gastos <= 0) {
+        resultado.textContent = "Introduce importes válidos.";
+        return;
+      }
+
+      const rentabilidad = (alquiler * 12 / (precio + gastos)) * 100;
+      resultado.textContent = "Rentabilidad bruta: " + rentabilidad.toFixed(2) + "%";
+    }
+  </script>
+</body>
+</html>
