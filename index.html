@@ -1,48 +1,204 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Calculadora inmobiliaria</title>
+  <meta name="theme-color" content="#b30638">
+  <title>Calculadora profesional de rentabilidad | Finques Rubio</title>
   <style>
-    body { font-family: Arial; max-width: 450px; margin: 40px auto; padding: 20px; }
-    h2 { color: #b30638; }
-    input { width: 100%; box-sizing: border-box; padding: 12px; margin: 8px 0 18px; }
-    button { background: #b30638; color: white; padding: 14px; border: 0; cursor: pointer; width: 100%; }
-    #resultado { margin-top: 25px; font-size: 22px; font-weight: bold; }
+    :root { --vino:#b30638; --oscuro:#24232b; --gris:#667085; --fondo:#f7f7f9; --borde:#e4e7ec; }
+    * {box-sizing:border-box}
+    body {margin:0;background:var(--fondo);font-family:Arial,Helvetica,sans-serif;color:var(--oscuro);line-height:1.45}
+    header {background:var(--vino);color:white;padding:28px 20px}
+    .contenedor {width:min(1080px,calc(100% - 32px));margin:auto}
+    header h1 {margin:0;font-size:clamp(23px,3vw,32px)}
+    header p {margin:7px 0 0;opacity:.9}
+    main {padding:26px 0 42px}
+    .rejilla {display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+    .tarjeta {background:white;border:1px solid var(--borde);border-radius:15px;padding:23px;box-shadow:0 4px 18px #17171708}
+    h2 {font-size:19px;margin:0 0 18px;color:var(--vino)}
+    .campos {display:grid;grid-template-columns:1fr 1fr;gap:15px}
+    label {display:block;font-weight:600;font-size:13px;margin-bottom:6px}
+    input {display:block;width:100%;padding:12px;font-size:16px;border:1px solid #cdd2dc;border-radius:8px;background:#fff;color:#24232b}
+    input:focus {outline:2px solid #b3063866;border-color:var(--vino)}
+    .nota {color:var(--gris);font-size:12px;margin:12px 0 0}
+    button {border:0;border-radius:9px;background:var(--vino);color:white;font-weight:bold;padding:14px 18px;font-size:16px;cursor:pointer;width:100%;margin-top:18px}
+    button:hover {background:#8f052d}
+    .resultado {display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .metrica {background:#fbf7f9;border:1px solid #f0dce3;border-radius:11px;padding:17px}
+    .metrica span {display:block;color:#5d5961;font-size:13px}
+    .metrica strong {display:block;font-size:clamp(19px,2.6vw,27px);margin-top:7px;color:var(--vino);font-variant-numeric:tabular-nums}
+    .resumen {margin-top:19px;border-top:1px solid var(--borde);padding-top:12px}
+    .fila {display:flex;justify-content:space-between;gap:10px;margin:10px 0;font-size:14px}
+    .fila strong {text-align:right;font-variant-numeric:tabular-nums}
+    .aviso {font-size:12px;color:var(--gris);margin-top:17px}
+    .error {color:#a20a0a;font-size:13px;margin-top:9px;min-height:18px}
+    footer {font-size:12px;color:var(--gris);text-align:center;padding:4px 20px 26px}
+    .identificacion {margin-bottom:19px;padding-bottom:16px;border-bottom:1px solid var(--borde)}
+    .identificacion .campos {grid-template-columns:1fr 1fr}
+    .acciones {display:flex;gap:10px;flex-wrap:wrap}
+    .acciones button {flex:1 1 160px}
+    .secundario {background:#484653}
+    .secundario:hover {background:#33313d}
+    .informe {margin-top:18px;padding-top:12px;border-top:1px solid var(--borde)}
+    .informe h3 {color:var(--vino);font-size:17px;margin:8px 0 12px}
+    .only-print {display:none}
+    @media(max-width:760px){.rejilla{grid-template-columns:1fr}.tarjeta{padding:18px}}
+    @media(max-width:430px){.campos{grid-template-columns:1fr}.resultado{grid-template-columns:1fr}}
+    @media print {
+      @page {size:A4;margin:13mm}
+      body{background:white;font-size:11px}
+      header{padding:15px 0;background:var(--vino)!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+      main{padding:12px 0}
+      .contenedor{width:100%}
+      .rejilla{display:block}
+      .tarjeta{box-shadow:none;border:0;padding:0}
+      .datos-formulario,.no-print{display:none!important}
+      .only-print{display:block}
+      .metrica{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+      .resultado{grid-template-columns:1fr 1fr}
+      .resumen,.informe{break-inside:avoid}
+      footer{padding-top:8px}
+    }
   </style>
 </head>
 <body>
-  <h2>Calculadora de rentabilidad</h2>
-
-  <label>Precio de compra (€)</label>
-  <input type="number" id="precio" min="0">
-
-  <label>Gastos de compra (€)</label>
-  <input type="number" id="gastos" min="0">
-
-  <label>Alquiler mensual (€)</label>
-  <input type="number" id="alquiler" min="0">
-
-  <button onclick="calcular()">Calcular rentabilidad</button>
-  <div id="resultado"></div>
-
-  <script>
-    function calcular() {
-      const precio = Number(document.getElementById("precio").value);
-      const gastos = Number(document.getElementById("gastos").value);
-      const alquiler = Number(document.getElementById("alquiler").value);
-      const resultado = document.getElementById("resultado");
-
-      if (precio <= 0 || gastos < 0 || alquiler < 0 || precio + gastos <= 0) {
-        resultado.textContent = "Introduce importes válidos.";
+  <header><div class="contenedor"><h1>Finques Rubio</h1><p>Calculadora profesional de rentabilidad inmobiliaria</p></div></header>
+  <main class="contenedor">
+    <div class="rejilla">
+      <section class="tarjeta datos-formulario">
+        <div class="identificacion">
+          <h2>Identificación del inmueble</h2>
+          <div class="campos">
+            <div><label for="referencia">Referencia o nombre</label><input id="referencia" type="text" maxlength="100" value="Ejemplo de inversión" placeholder="Ej.: Piso en Badalona"></div>
+            <div><label for="localidad">Municipio / zona</label><input id="localidad" type="text" maxlength="100" placeholder="Ej.: Badalona"></div>
+          </div>
+        </div>
+        <h2>1. Inversión e ingresos</h2>
+        <div class="campos">
+          <div><label for="compra">Precio de compra (€)</label><input id="compra" type="number" min="0" step="0.01" value="165000"></div>
+          <div><label for="adquisicion">Gastos de adquisición (€)</label><input id="adquisicion" type="number" min="0" step="0.01" value="18000"></div>
+          <div><label for="alquiler">Alquiler mensual (€)</label><input id="alquiler" type="number" min="0" step="0.01" value="900"></div>
+          <div><label for="vacio">Meses sin alquilar al año</label><input id="vacio" type="number" min="0" max="12" step="0.5" value="0"></div>
+        </div>
+        <p class="nota">Los gastos de adquisición pueden incluir impuestos, notaría, registro y otros costes de compra.</p>
+        <h2 style="margin-top:26px">2. Gastos anuales del inmueble</h2>
+        <div class="campos">
+          <div><label for="ibi">IBI (€ / año)</label><input id="ibi" type="number" min="0" step="0.01" value="500"></div>
+          <div><label for="comunidad">Comunidad (€ / año)</label><input id="comunidad" type="number" min="0" step="0.01" value="720"></div>
+          <div><label for="seguro">Seguro (€ / año)</label><input id="seguro" type="number" min="0" step="0.01" value="250"></div>
+          <div><label for="mantenimiento">Mantenimiento (€ / año)</label><input id="mantenimiento" type="number" min="0" step="0.01" value="500"></div>
+          <div><label for="gestion">Gestión del alquiler (€ / año)</label><input id="gestion" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="otros">Otros gastos (€ / año)</label><input id="otros" type="number" min="0" step="0.01" value="0"></div>
+        </div>
+        <div class="acciones"><button type="button" id="calcular">Actualizar resultados</button><button type="button" id="restablecer" class="secundario">Restablecer ejemplo</button></div>
+        <div id="error" class="error" role="alert" aria-live="polite"></div>
+      </section>
+      <section class="tarjeta" aria-live="polite">
+        <h2>3. Resultado del análisis</h2>
+        <div class="only-print" id="cabeceraInforme"></div>
+        <div class="resultado">
+          <div class="metrica"><span>Rentabilidad bruta</span><strong id="bruta">—</strong></div>
+          <div class="metrica"><span>Rentabilidad neta</span><strong id="neta">—</strong></div>
+          <div class="metrica"><span>Beneficio neto anual</span><strong id="beneficio">—</strong></div>
+          <div class="metrica"><span>Inversión total</span><strong id="inversion">—</strong></div>
+        </div>
+        <div class="resumen">
+          <div class="fila"><span>Alquiler anual teórico</span><strong id="teorico">—</strong></div>
+          <div class="fila"><span>Ingresos efectivos (tras meses vacíos)</span><strong id="efectivos">—</strong></div>
+          <div class="fila"><span>Gastos anuales del inmueble</span><strong id="totalGastos">—</strong></div>
+          <div class="fila"><span>Beneficio neto mensual equivalente</span><strong id="mensual">—</strong></div>
+        </div>
+        <div class="informe">
+          <h3>Desglose de gastos</h3>
+          <div class="fila"><span>IBI</span><strong id="gastoIbi">—</strong></div>
+          <div class="fila"><span>Comunidad</span><strong id="gastoComunidad">—</strong></div>
+          <div class="fila"><span>Seguro</span><strong id="gastoSeguro">—</strong></div>
+          <div class="fila"><span>Mantenimiento</span><strong id="gastoMantenimiento">—</strong></div>
+          <div class="fila"><span>Gestión del alquiler</span><strong id="gastoGestion">—</strong></div>
+          <div class="fila"><span>Otros gastos</span><strong id="gastoOtros">—</strong></div>
+        </div>
+        <p class="aviso"><strong>Cómo se calcula:</strong> rentabilidad bruta = alquiler anual teórico / inversión total. Rentabilidad neta = (ingresos efectivos − gastos anuales) / inversión total.</p>
+        <p class="aviso">Estimación antes de IRPF, financiación, amortizaciones y plusvalías. No incluye revalorización del inmueble. Los importes son orientativos y deben comprobarse para cada operación.</p>
+        <div class="acciones no-print"><button type="button" id="imprimir" class="secundario">Imprimir / guardar en PDF</button><button type="button" id="copiar">Copiar resumen</button></div>
+        <p class="nota no-print" id="mensajeCopia" role="status" aria-live="polite"></p>
+      </section>
+    </div>
+  </main>
+  <footer>Finques Rubio · Herramienta orientativa de análisis inmobiliario</footer>
+<script>
+  const ids = ['compra','adquisicion','alquiler','vacio','ibi','comunidad','seguro','mantenimiento','gestion','otros'];
+  const euros = n => new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',maximumFractionDigits:2}).format(n);
+  const porcentaje = n => new Intl.NumberFormat('es-ES',{style:'percent',minimumFractionDigits:2,maximumFractionDigits:2}).format(n);
+  let ultimoResumen = "";
+  function calcular(){
+    const valores = {};
+    for(const id of ids){
+      const entrada = document.getElementById(id);
+      const valor = Number(entrada.value);
+      if(entrada.value.trim()==='' || !Number.isFinite(valor) || valor<0){
+        document.getElementById('error').textContent='Revisa los campos: todos deben contener números iguales o superiores a cero.';
         return;
       }
-
-      const rentabilidad = (alquiler * 12 / (precio + gastos)) * 100;
-      resultado.textContent = "Rentabilidad bruta: " + rentabilidad.toFixed(2) + "%";
+      valores[id]=valor;
     }
-  </script>
+    const v=valores;
+    const inversion=v.compra+v.adquisicion;
+    if(inversion<=0 || v.vacio>12){
+      document.getElementById('error').textContent='La inversión debe ser mayor que cero y los meses sin alquilar deben estar entre 0 y 12.';
+      return;
+    }
+    document.getElementById('error').textContent='';
+    const teorico=v.alquiler*12;
+    const efectivos=v.alquiler*(12-v.vacio);
+    const gastos=v.ibi+v.comunidad+v.seguro+v.mantenimiento+v.gestion+v.otros;
+    const beneficio=efectivos-gastos;
+    const resultados={bruta:porcentaje(teorico/inversion),neta:porcentaje(beneficio/inversion),beneficio:euros(beneficio),inversion:euros(inversion),teorico:euros(teorico),efectivos:euros(efectivos),totalGastos:euros(gastos),mensual:euros(beneficio/12)};
+    for(const [id,valor] of Object.entries(resultados)) document.getElementById(id).textContent=valor;
+    const desgloses={gastoIbi:v.ibi,gastoComunidad:v.comunidad,gastoSeguro:v.seguro,gastoMantenimiento:v.mantenimiento,gastoGestion:v.gestion,gastoOtros:v.otros};
+    for(const [id,valor] of Object.entries(desgloses)) document.getElementById(id).textContent=euros(valor);
+    ultimoResumen=[
+      'FINQUES RUBIO — ANÁLISIS DE RENTABILIDAD',
+      'Inmueble: '+(document.getElementById('referencia').value.trim()||'Sin referencia'),
+      'Zona: '+(document.getElementById('localidad').value.trim()||'Sin indicar'),
+      'Inversión total: '+resultados.inversion,
+      'Alquiler mensual: '+euros(v.alquiler),
+      'Ingresos efectivos anuales: '+resultados.efectivos,
+      'Gastos anuales: '+resultados.totalGastos,
+      'Beneficio neto anual: '+resultados.beneficio,
+      'Rentabilidad bruta: '+resultados.bruta,
+      'Rentabilidad neta: '+resultados.neta,
+      'Estimación orientativa antes de impuestos personales y financiación.'
+    ].join('\n');
+  }
+  document.getElementById('calcular').addEventListener('click',calcular);
+  ids.forEach(id=>document.getElementById(id).addEventListener('input',calcular));
+  document.getElementById('restablecer').addEventListener('click',()=>{
+    const inicial={compra:165000,adquisicion:18000,alquiler:900,vacio:0,ibi:500,comunidad:720,seguro:250,mantenimiento:500,gestion:0,otros:0};
+    for(const [id,valor] of Object.entries(inicial)) document.getElementById(id).value=valor;
+    document.getElementById('referencia').value='Ejemplo de inversión';
+    document.getElementById('localidad').value='';
+    calcular();
+  });
+  document.getElementById('imprimir').addEventListener('click',()=>{
+    calcular();
+    if(document.getElementById('error').textContent) return;
+    const nombre=document.getElementById('referencia').value.trim()||'Inmueble sin referencia';
+    const localidad=document.getElementById('localidad').value.trim()||'Zona sin especificar';
+    const fecha=new Intl.DateTimeFormat('es-ES',{dateStyle:'long'}).format(new Date());
+    const cabecera=document.getElementById('cabeceraInforme');
+    cabecera.textContent='Informe de rentabilidad · '+nombre+' · '+localidad+' · '+fecha;
+    window.print();
+  });
+  document.getElementById('copiar').addEventListener('click',async()=>{
+    calcular();
+    if(document.getElementById('error').textContent) return;
+    const aviso=document.getElementById('mensajeCopia');
+    try {await navigator.clipboard.writeText(ultimoResumen); aviso.textContent='Resumen copiado al portapapeles.';}
+    catch(e){aviso.textContent='No se pudo copiar automáticamente. Puedes imprimir el informe en PDF.';}
+  });
+  ['referencia','localidad'].forEach(id=>document.getElementById(id).addEventListener('input',calcular));
+  calcular();
+</script>
 </body>
 </html>
