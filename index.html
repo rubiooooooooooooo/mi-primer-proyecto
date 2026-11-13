@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#b30638">
-  <title>Calculadora profesional de rentabilidad | Finques Rubio</title>
+  <title>Calculadora profesional V4 | Finques Rubio</title>
   <style>
     :root { --vino:#b30638; --oscuro:#24232b; --gris:#667085; --fondo:#f7f7f9; --borde:#e4e7ec; }
     * {box-sizing:border-box}
@@ -43,23 +43,54 @@
     .informe {margin-top:18px;padding-top:12px;border-top:1px solid var(--borde)}
     .informe h3 {color:var(--vino);font-size:17px;margin:8px 0 12px}
     .only-print {display:none}
+    textarea {display:block;width:100%;min-height:82px;padding:12px;border:1px solid #cdd2dc;border-radius:8px;font:inherit;resize:vertical}
+    .form-complemento{margin-top:24px;padding-top:17px;border-top:1px solid var(--borde)}
+    .financia {margin-top:23px;padding-top:19px;border-top:1px solid var(--borde)}
+    .financia p {font-size:12px;color:var(--gris)}
+    .subtitulo-resultado {margin:26px 0 12px;color:var(--vino);font-size:17px}
+    .informe-pdf{display:none}
+    .informe-pdf h2{font-size:18px;margin:24px 0 12px;break-after:avoid}
+    .informe-pdf .pdf-brand{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid var(--vino);padding-bottom:14px}
+    .pdf-brand strong{font-size:25px;color:var(--vino);letter-spacing:-.7px}
+    .pdf-brand small{display:block;color:var(--gris);font-size:11px}
+    .pdf-brand .documento{font-size:12px;text-align:right;color:#42404a}
+    .pdf-title{margin:25px 0 17px}
+    .pdf-title h1{font-size:25px;margin:0;color:var(--oscuro)}
+    .pdf-title p{color:var(--gris);margin:6px 0}
+    .pdf-data{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;background:#f7f7f9;padding:15px;border-radius:9px}
+    .pdf-data div{font-size:12px;overflow-wrap:anywhere}
+    .pdf-data span{display:block;color:var(--gris);font-size:10px;text-transform:uppercase;letter-spacing:.5px}
+    .pdf-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0}
+    .pdf-kpi{background:#fbf7f9;border:1px solid #f0dce3;padding:12px 8px;border-radius:8px}
+    .pdf-kpi span{display:block;color:#5d5961;font-size:10px}
+    .pdf-kpi strong{display:block;color:var(--vino);font-size:17px;margin-top:5px}
+    .pdf-table{width:100%;border-collapse:collapse;font-size:11px}
+    .pdf-table th,.pdf-table td{padding:7px 9px;border-bottom:1px solid #e5e5e9;text-align:left}
+    .pdf-table td:last-child,.pdf-table th:last-child{text-align:right;font-variant-numeric:tabular-nums}
+    .pdf-table th{background:#f5f1f3;font-weight:bold}
+    .pdf-table .total{font-weight:bold;background:#faf8f9}
+    .pdf-text{font-size:12px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+    .pdf-disclaimer{font-size:9px;color:#65636c;margin-top:24px;padding-top:12px;border-top:1px solid #dedee2}
+    .pdf-footer{font-size:10px;color:#5d5961;margin-top:12px;display:flex;justify-content:space-between;border-top:1px solid #eee;padding-top:8px}
+
     @media(max-width:760px){.rejilla{grid-template-columns:1fr}.tarjeta{padding:18px}}
     @media(max-width:430px){.campos{grid-template-columns:1fr}.resultado{grid-template-columns:1fr}}
     @media print {
-      @page {size:A4;margin:13mm}
-      body{background:white;font-size:11px}
-      header{padding:15px 0;background:var(--vino)!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
-      main{padding:12px 0}
-      .contenedor{width:100%}
-      .rejilla{display:block}
-      .tarjeta{box-shadow:none;border:0;padding:0}
-      .datos-formulario,.no-print{display:none!important}
-      .only-print{display:block}
-      .metrica{print-color-adjust:exact;-webkit-print-color-adjust:exact}
-      .resultado{grid-template-columns:1fr 1fr}
-      .resumen,.informe{break-inside:avoid}
-      footer{padding-top:8px}
+      @page {size:A4;margin:13mm 15mm}
+      html,body{background:white!important;color:#24232b!important}
+      header,main,footer{display:none!important}
+      .informe-pdf{display:block!important;font-family:Arial,Helvetica,sans-serif;line-height:1.35}
+      .pdf-kpi,.pdf-data,.pdf-table th,.pdf-table .total{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+      .informe-pdf h2,.pdf-kpis,.pdf-data,.pdf-text,.pdf-table tr{break-inside:avoid}
+      .pdf-title{margin-top:19px}
+      .informe-pdf h2{margin-top:16px;margin-bottom:7px;font-size:15px}
+      .pdf-kpis{margin:12px 0}
+      .pdf-table th,.pdf-table td{padding:5px 8px}
+      .pdf-disclaimer{margin-top:14px}
+      .pdf-table{font-size:10px}
+      .pdf-table th,.pdf-table td{padding:3px 7px}
     }
+
   </style>
 </head>
 <body>
@@ -74,7 +105,13 @@
             <div><label for="localidad">Municipio / zona</label><input id="localidad" type="text" maxlength="100" placeholder="Ej.: Badalona"></div>
           </div>
         </div>
-        <h2>1. Inversión e ingresos</h2>
+        <div class="form-complemento" style="margin-top:0;padding-top:0;border-top:0">
+          <div class="campos">
+            <div><label for="cliente">Nombre del propietario (opcional)</label><input id="cliente" type="text" maxlength="120" placeholder="Ej.: Nombre del propietario"></div>
+            <div><label for="asesor">Asesor responsable (opcional)</label><input id="asesor" type="text" maxlength="120" placeholder="Ej.: Equipo Finques Rubio"></div>
+          </div>
+        </div>
+        <h2 style="margin-top:23px">1. Inversión e ingresos</h2>
         <div class="campos">
           <div><label for="compra">Precio de compra (€)</label><input id="compra" type="number" min="0" step="0.01" value="165000"></div>
           <div><label for="adquisicion">Gastos de adquisición (€)</label><input id="adquisicion" type="number" min="0" step="0.01" value="18000"></div>
@@ -91,11 +128,20 @@
           <div><label for="gestion">Gestión del alquiler (€ / año)</label><input id="gestion" type="number" min="0" step="0.01" value="0"></div>
           <div><label for="otros">Otros gastos (€ / año)</label><input id="otros" type="number" min="0" step="0.01" value="0"></div>
         </div>
+        <div class="financia"><h2>3. Financiación hipotecaria</h2>
+          <div class="campos">
+            <div><label for="porcentajeFinanciado">Financiación sobre precio de compra (%)</label><input id="porcentajeFinanciado" type="number" min="0" max="100" step="0.1" value="80"></div>
+            <div><label for="interes">Interés nominal anual fijo (%)</label><input id="interes" type="number" min="0" step="0.01" value="3"></div>
+            <div><label for="plazo">Plazo de la hipoteca (años)</label><input id="plazo" type="number" min="1" max="50" step="1" value="30"></div>
+          </div>
+          <p>Simulación de cuota constante (sistema francés), sin comisiones, seguros vinculados ni variaciones del tipo de interés. Si compras sin hipoteca, indica financiación del 0 %.</p>
+        </div>
+        <div class="form-complemento"><h2>4. Observaciones para el informe PDF</h2><label for="observaciones">Comentarios o información relevante (opcional)</label><textarea id="observaciones" maxlength="700" placeholder="Estado del inmueble, previsión de reforma, particularidades del alquiler..."></textarea><p class="nota">Estas observaciones aparecerán en el informe, sin modificar los resultados.</p></div>
         <div class="acciones"><button type="button" id="calcular">Actualizar resultados</button><button type="button" id="restablecer" class="secundario">Restablecer ejemplo</button></div>
         <div id="error" class="error" role="alert" aria-live="polite"></div>
       </section>
       <section class="tarjeta" aria-live="polite">
-        <h2>3. Resultado del análisis</h2>
+        <h2>5. Resultado del análisis</h2>
         <div class="only-print" id="cabeceraInforme"></div>
         <div class="resultado">
           <div class="metrica"><span>Rentabilidad bruta</span><strong id="bruta">—</strong></div>
@@ -109,6 +155,18 @@
           <div class="fila"><span>Gastos anuales del inmueble</span><strong id="totalGastos">—</strong></div>
           <div class="fila"><span>Beneficio neto mensual equivalente</span><strong id="mensual">—</strong></div>
         </div>
+        <h3 class="subtitulo-resultado">Simulación con financiación</h3>
+        <div class="resultado">
+          <div class="metrica"><span>Cuota de hipoteca mensual</span><strong id="cuota">—</strong></div>
+          <div class="metrica"><span>Capital propio necesario</span><strong id="capitalPropio">—</strong></div>
+          <div class="metrica"><span>Flujo de caja anual</span><strong id="flujoAnual">—</strong></div>
+          <div class="metrica"><span>Rentabilidad cash-on-cash</span><strong id="cashOnCash">—</strong></div>
+        </div>
+        <div class="resumen">
+          <div class="fila"><span>Importe de la hipoteca</span><strong id="prestamo">—</strong></div>
+          <div class="fila"><span>Cuotas anuales</span><strong id="cuotasAnuales">—</strong></div>
+          <div class="fila"><span>Flujo de caja mensual medio</span><strong id="flujoMensual">—</strong></div>
+        </div>
         <div class="informe">
           <h3>Desglose de gastos</h3>
           <div class="fila"><span>IBI</span><strong id="gastoIbi">—</strong></div>
@@ -119,18 +177,75 @@
           <div class="fila"><span>Otros gastos</span><strong id="gastoOtros">—</strong></div>
         </div>
         <p class="aviso"><strong>Cómo se calcula:</strong> rentabilidad bruta = alquiler anual teórico / inversión total. Rentabilidad neta = (ingresos efectivos − gastos anuales) / inversión total.</p>
-        <p class="aviso">Estimación antes de IRPF, financiación, amortizaciones y plusvalías. No incluye revalorización del inmueble. Los importes son orientativos y deben comprobarse para cada operación.</p>
-        <div class="acciones no-print"><button type="button" id="imprimir" class="secundario">Imprimir / guardar en PDF</button><button type="button" id="copiar">Copiar resumen</button></div>
+        <p class="aviso">La rentabilidad neta del inmueble es antes de financiación; el flujo de caja y el cash-on-cash sí descuentan las cuotas hipotecarias. Estimaciones antes de IRPF, amortizaciones y plusvalías. No incluye revalorización del inmueble. Los importes son orientativos y deben comprobarse para cada operación.</p>
+        <div class="acciones no-print"><button type="button" id="imprimir" class="secundario">Generar informe PDF corporativo</button><button type="button" id="copiar">Copiar resumen</button></div>
         <p class="nota no-print" id="mensajeCopia" role="status" aria-live="polite"></p>
       </section>
     </div>
   </main>
+
+  <article class="informe-pdf" id="informePDF" aria-label="Informe corporativo imprimible">
+    <div class="pdf-brand"><div><strong>FINQUES RUBIO</strong><small>Asesoramiento y gestión inmobiliaria</small></div><div class="documento">INFORME DE INVERSIÓN<br><span id="pdfFecha"></span></div></div>
+    <div class="pdf-title"><h1>Análisis de rentabilidad inmobiliaria</h1><p>Estimación económica del inmueble · Documento informativo</p></div>
+    <div class="pdf-data">
+      <div><span>Inmueble / referencia</span><b id="pdfReferencia"></b></div>
+      <div><span>Municipio / zona</span><b id="pdfLocalidad"></b></div>
+      <div><span>Propietario</span><b id="pdfCliente"></b></div>
+      <div><span>Asesor responsable</span><b id="pdfAsesor"></b></div>
+    </div>
+    <div class="pdf-kpis">
+      <div class="pdf-kpi"><span>Rentabilidad bruta anual</span><strong id="pdfBruta"></strong></div>
+      <div class="pdf-kpi"><span>Rentabilidad neta anual</span><strong id="pdfNeta"></strong></div>
+      <div class="pdf-kpi"><span>Resultado neto anual</span><strong id="pdfBeneficio"></strong></div>
+      <div class="pdf-kpi"><span>Inversión total</span><strong id="pdfInversion"></strong></div>
+    </div>
+    <h2>Resumen de la operación</h2>
+    <table class="pdf-table"><tbody>
+      <tr><td>Precio de compra</td><td id="pdfCompra"></td></tr>
+      <tr><td>Gastos de adquisición</td><td id="pdfAdquisicion"></td></tr>
+      <tr class="total"><td>Inversión total</td><td id="pdfInversionTabla"></td></tr>
+      <tr><td>Renta mensual prevista</td><td id="pdfAlquiler"></td></tr>
+      <tr><td>Meses sin alquilar previstos al año</td><td id="pdfVacio"></td></tr>
+      <tr><td>Ingresos brutos anuales teóricos</td><td id="pdfTeorico"></td></tr>
+      <tr><td>Ingresos anuales estimados ajustados por vacancia</td><td id="pdfEfectivos"></td></tr>
+    </tbody></table>
+    <h2>Previsión de gastos anuales</h2>
+    <table class="pdf-table"><tbody>
+      <tr><td>IBI</td><td id="pdfIbi"></td></tr><tr><td>Comunidad de propietarios</td><td id="pdfComunidad"></td></tr><tr><td>Seguro</td><td id="pdfSeguro"></td></tr><tr><td>Mantenimiento</td><td id="pdfMantenimiento"></td></tr><tr><td>Gestión del alquiler</td><td id="pdfGestion"></td></tr><tr><td>Otros gastos</td><td id="pdfOtros"></td></tr>
+      <tr class="total"><td>Total gastos anuales</td><td id="pdfTotalGastos"></td></tr>
+    </tbody></table>
+    <h2>Escenario de financiación</h2>
+    <table class="pdf-table"><tbody>
+      <tr><td>Porcentaje financiado sobre precio</td><td id="pdfPorcentajeFinanciado"></td></tr>
+      <tr><td>Hipoteca estimada</td><td id="pdfPrestamo"></td></tr>
+      <tr><td>Tipo nominal anual fijo</td><td id="pdfInteres"></td></tr>
+      <tr><td>Plazo</td><td id="pdfPlazo"></td></tr>
+      <tr><td>Cuota mensual</td><td id="pdfCuota"></td></tr>
+      <tr><td>Cuotas hipotecarias anuales</td><td id="pdfCuotasAnuales"></td></tr>
+      <tr><td>Capital propio inicial estimado</td><td id="pdfCapitalPropio"></td></tr>
+      <tr class="total"><td>Flujo de caja anual tras cuotas</td><td id="pdfFlujoAnual"></td></tr>
+      <tr class="total"><td>Rentabilidad anual sobre capital propio (cash-on-cash)</td><td id="pdfCashOnCash"></td></tr>
+    </tbody></table>
+    <h2>Conclusión económica</h2><p class="pdf-text" id="pdfConclusion"></p>
+    <section id="pdfNotasSeccion"><h2>Observaciones del asesor</h2><p class="pdf-text" id="pdfObservaciones"></p></section>
+    <p class="pdf-disclaimer">Cálculos: rentabilidad bruta = renta mensual × 12 / inversión total; rentabilidad neta = (rentas ajustadas por vacancia − gastos anuales) / inversión total. La rentabilidad neta del inmueble no descuenta financiación; el cash-on-cash sí descuenta las cuotas de hipoteca. Resultados antes de IRPF, amortizaciones fiscales y posibles plusvalías. La cuota hipotecaria contiene intereses y devolución de principal, por lo que el flujo de caja no equivale al beneficio fiscal. No contempla revalorización, reformas no presupuestadas ni contingencias. Estimación orientativa, no constituye una tasación ni garantía de ingresos o rendimientos. Todos los datos deben verificarse antes de tomar decisiones de inversión.</p>
+    <div class="pdf-footer"><span>Finques Rubio · Informe de análisis inmobiliario</span><span id="pdfFechaPie"></span></div>
+  </article>
   <footer>Finques Rubio · Herramienta orientativa de análisis inmobiliario</footer>
 <script>
-  const ids = ['compra','adquisicion','alquiler','vacio','ibi','comunidad','seguro','mantenimiento','gestion','otros'];
+  const ids = ['compra','adquisicion','alquiler','vacio','ibi','comunidad','seguro','mantenimiento','gestion','otros','porcentajeFinanciado','interes','plazo'];
   const euros = n => new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',maximumFractionDigits:2}).format(n);
   const porcentaje = n => new Intl.NumberFormat('es-ES',{style:'percent',minimumFractionDigits:2,maximumFractionDigits:2}).format(n);
   let ultimoResumen = "";
+  function hipoteca(v){
+    const prestamo=v.compra*v.porcentajeFinanciado/100;
+    const capitalPropio=v.compra+v.adquisicion-prestamo;
+    if(prestamo===0) return {prestamo,capitalPropio,cuota:0,cuotasAnuales:0};
+    const meses=v.plazo*12;
+    const tasa=v.interes/1200;
+    const cuota=tasa===0 ? prestamo/meses : prestamo*tasa/(1-Math.pow(1+tasa,-meses));
+    return {prestamo,capitalPropio,cuota,cuotasAnuales:cuota*12};
+  }
   function calcular(){
     const valores = {};
     for(const id of ids){
@@ -144,8 +259,8 @@
     }
     const v=valores;
     const inversion=v.compra+v.adquisicion;
-    if(inversion<=0 || v.vacio>12){
-      document.getElementById('error').textContent='La inversión debe ser mayor que cero y los meses sin alquilar deben estar entre 0 y 12.';
+    if(inversion<=0 || v.vacio>12 || v.porcentajeFinanciado>100 || v.plazo<1 || v.plazo>50 || !Number.isInteger(v.plazo)){
+      document.getElementById('error').textContent='Revisa la inversión, vacancia (0–12), financiación (0–100 %) y plazo de hipoteca (1–50 años enteros).';
       return;
     }
     document.getElementById('error').textContent='';
@@ -153,7 +268,11 @@
     const efectivos=v.alquiler*(12-v.vacio);
     const gastos=v.ibi+v.comunidad+v.seguro+v.mantenimiento+v.gestion+v.otros;
     const beneficio=efectivos-gastos;
+    const h=hipoteca(v);
+    const flujoAnual=beneficio-h.cuotasAnuales;
+    const coc=h.capitalPropio>0?porcentaje(flujoAnual/h.capitalPropio):'No aplica';
     const resultados={bruta:porcentaje(teorico/inversion),neta:porcentaje(beneficio/inversion),beneficio:euros(beneficio),inversion:euros(inversion),teorico:euros(teorico),efectivos:euros(efectivos),totalGastos:euros(gastos),mensual:euros(beneficio/12)};
+    Object.assign(resultados,{prestamo:euros(h.prestamo),capitalPropio:euros(h.capitalPropio),cuota:euros(h.cuota),cuotasAnuales:euros(h.cuotasAnuales),flujoAnual:euros(flujoAnual),flujoMensual:euros(flujoAnual/12),cashOnCash:coc});
     for(const [id,valor] of Object.entries(resultados)) document.getElementById(id).textContent=valor;
     const desgloses={gastoIbi:v.ibi,gastoComunidad:v.comunidad,gastoSeguro:v.seguro,gastoMantenimiento:v.mantenimiento,gastoGestion:v.gestion,gastoOtros:v.otros};
     for(const [id,valor] of Object.entries(desgloses)) document.getElementById(id).textContent=euros(valor);
@@ -168,26 +287,47 @@
       'Beneficio neto anual: '+resultados.beneficio,
       'Rentabilidad bruta: '+resultados.bruta,
       'Rentabilidad neta: '+resultados.neta,
-      'Estimación orientativa antes de impuestos personales y financiación.'
+      'Hipoteca: '+resultados.prestamo,
+      'Cuota mensual: '+resultados.cuota,
+      'Capital propio: '+resultados.capitalPropio,
+      'Flujo de caja anual: '+resultados.flujoAnual,
+      'Cash-on-cash: '+resultados.cashOnCash,
+      'Estimación orientativa antes de impuestos personales; hipoteca simulada a tipo fijo.'
     ].join('\n');
   }
   document.getElementById('calcular').addEventListener('click',calcular);
   ids.forEach(id=>document.getElementById(id).addEventListener('input',calcular));
   document.getElementById('restablecer').addEventListener('click',()=>{
-    const inicial={compra:165000,adquisicion:18000,alquiler:900,vacio:0,ibi:500,comunidad:720,seguro:250,mantenimiento:500,gestion:0,otros:0};
+    const inicial={compra:165000,adquisicion:18000,alquiler:900,vacio:0,ibi:500,comunidad:720,seguro:250,mantenimiento:500,gestion:0,otros:0,porcentajeFinanciado:80,interes:3,plazo:30};
     for(const [id,valor] of Object.entries(inicial)) document.getElementById(id).value=valor;
     document.getElementById('referencia').value='Ejemplo de inversión';
     document.getElementById('localidad').value='';
     calcular();
   });
+  function escribirPdf(id,valor){document.getElementById('pdf'+id).textContent=valor;}
+  function prepararInforme(){
+    const v=Object.fromEntries(ids.map(id=>[id,Number(document.getElementById(id).value)]));
+    const inversion=v.compra+v.adquisicion;
+    const ingresos=v.alquiler*(12-v.vacio);
+    const gastos=v.ibi+v.comunidad+v.seguro+v.mantenimiento+v.gestion+v.otros;
+    const neto=ingresos-gastos;
+    const h=hipoteca(v);
+    const flujoAnual=neto-h.cuotasAnuales;
+    const nombre=id=>document.getElementById(id).value.trim()||'No indicado';
+    const hoy=new Intl.DateTimeFormat('es-ES',{day:'2-digit',month:'long',year:'numeric'}).format(new Date());
+    escribirPdf('Fecha',hoy);escribirPdf('FechaPie',hoy);
+    for(const [id,campo] of Object.entries({Referencia:'referencia',Localidad:'localidad',Cliente:'cliente',Asesor:'asesor'}))escribirPdf(id,nombre(campo));
+    for(const [id,valor] of Object.entries({Bruta:porcentaje(v.alquiler*12/inversion),Neta:porcentaje(neto/inversion),Beneficio:euros(neto),Inversion:euros(inversion),Compra:euros(v.compra),Adquisicion:euros(v.adquisicion),InversionTabla:euros(inversion),Alquiler:euros(v.alquiler),Vacio:String(v.vacio).replace('.',','),Teorico:euros(v.alquiler*12),Efectivos:euros(ingresos),Ibi:euros(v.ibi),Comunidad:euros(v.comunidad),Seguro:euros(v.seguro),Mantenimiento:euros(v.mantenimiento),Gestion:euros(v.gestion),Otros:euros(v.otros),TotalGastos:euros(gastos),PorcentajeFinanciado:porcentaje(v.porcentajeFinanciado/100),Prestamo:euros(h.prestamo),Interes:porcentaje(v.interes/100),Plazo:v.plazo+' años',Cuota:euros(h.cuota),CuotasAnuales:euros(h.cuotasAnuales),CapitalPropio:euros(h.capitalPropio),FlujoAnual:euros(flujoAnual),CashOnCash:h.capitalPropio>0?porcentaje(flujoAnual/h.capitalPropio):'No aplica'}))escribirPdf(id,valor);
+    const orientacion=neto>=0?'resultado anual estimado positivo':'resultado anual estimado negativo';
+    escribirPdf('Conclusion',`Para una inversión total prevista de ${euros(inversion)}, la renta mensual considerada es de ${euros(v.alquiler)}. Con ${String(v.vacio).replace('.',',')} meses de vacancia al año y gastos recurrentes de ${euros(gastos)}, se obtiene un ${orientacion} de ${euros(neto)} (${porcentaje(neto/inversion)} de rentabilidad neta anual). La rentabilidad bruta anual, sin descontar gastos ni vacancia, es del ${porcentaje(v.alquiler*12/inversion)}. La financiación simulada asciende a ${euros(h.prestamo)}, con cuota mensual de ${euros(h.cuota)}; tras las cuotas, el flujo de caja anual sería ${euros(flujoAnual)} y la rentabilidad cash-on-cash ${h.capitalPropio>0?porcentaje(flujoAnual/h.capitalPropio):'no aplicable por capital propio nulo'}. Estas cifras dependen de las hipótesis introducidas y no suponen una previsión garantizada.`);
+    const obs=document.getElementById('observaciones').value.trim();
+    document.getElementById('pdfNotasSeccion').style.display=obs?'block':'none';
+    escribirPdf('Observaciones',obs);
+  }
   document.getElementById('imprimir').addEventListener('click',()=>{
     calcular();
     if(document.getElementById('error').textContent) return;
-    const nombre=document.getElementById('referencia').value.trim()||'Inmueble sin referencia';
-    const localidad=document.getElementById('localidad').value.trim()||'Zona sin especificar';
-    const fecha=new Intl.DateTimeFormat('es-ES',{dateStyle:'long'}).format(new Date());
-    const cabecera=document.getElementById('cabeceraInforme');
-    cabecera.textContent='Informe de rentabilidad · '+nombre+' · '+localidad+' · '+fecha;
+    prepararInforme();
     window.print();
   });
   document.getElementById('copiar').addEventListener('click',async()=>{
